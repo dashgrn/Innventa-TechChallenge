@@ -27,7 +27,7 @@ const ListUsers = props => {
             <Text fontSize='3xl' m={3}>Usuarios actualmente Registrados</Text>
             <table className={styles.table}>
                 <tbody>
-                    <tr>
+                    <tr key='tableHeaders'>
                         <td>Documento </td>
                         <td>Nombre Completo</td>
                         <td>Nacionalidad</td>

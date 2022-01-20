@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import axios from "axios";
 import { useFormik } from 'formik'
 import { Button } from '@chakra-ui/react'
-import { Input, Select, FormControl, FormLabel, FormErrorMessage, SimpleGrid, Box, Text } from '@chakra-ui/react'
+import { Input, Select, FormControl, FormLabel, SimpleGrid, Box, Text } from '@chakra-ui/react'
 import styles from '../styles/RegisterUser.module.css'
 
 
@@ -72,7 +72,7 @@ const RegisterForm = props => {
                         <FormControl>
                             <FormLabel htmlFor='sicCode'>Identificación:</FormLabel>
                             <Input id="sicCode"
-                                type="number"
+                                type="text"
                                 value={formik.values.sicCode}
                                 onChange={formik.handleChange} />
                         </FormControl>
@@ -83,6 +83,8 @@ const RegisterForm = props => {
                             <Input id="firstName"
                                 type="text"
                                 name="firstName"
+                                pattern="^[A-Za-z \s*]+$"
+                                title="Verifica tu nombre (Sin tildes)"
                                 value={formik.values.firstName}
                                 onChange={formik.handleChange} />
                         </FormControl>
@@ -92,6 +94,8 @@ const RegisterForm = props => {
                             <Input id="lastName"
                                 type="text"
                                 name="lastName"
+                                pattern="^[A-Za-z \s*]+$"
+                                title="Verifica tus apellidos (Sin tildes)"
                                 value={formik.values.lastName}
                                 onChange={formik.handleChange} />
                         </FormControl>
@@ -128,7 +132,7 @@ const RegisterForm = props => {
                                 onChange={formik.handleChange} />
                         </FormControl>
 
-                        <Button colorScheme='blue' type="submit">+Agregar</Button>
+                        <Button colorScheme='blue' type="submit" style={{ marginTop: "32px" }}>+Agregar</Button>
                     </SimpleGrid>
                 </form>
             </Box>
