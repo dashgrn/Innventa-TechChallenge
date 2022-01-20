@@ -1,8 +1,10 @@
-import {useEffect, useState} from 'react'
+import { useEffect, useState } from 'react'
 import axios from "axios";
 import { useFormik } from 'formik'
+import { Button } from '@chakra-ui/react'
+import { Input, Select, FormControl, FormLabel, FormErrorMessage, SimpleGrid, Box, Text } from '@chakra-ui/react'
 
-const RegisterForm = () => {
+const RegisterForm = props => {
 
     const [countriesArray, setCountriesArray] = useState([])
 
@@ -14,9 +16,9 @@ const RegisterForm = () => {
             .then((response) => {
                 setCountriesArray(response.data)
                 console.log(countriesArray)
-            }).catch((err) =>{
-            console.log('error getting countries.', err)
-        })
+            }).catch((err) => {
+                console.log('error getting countries.', err)
+            })
     }, []);
 
     const formik = useFormik({
@@ -28,45 +30,75 @@ const RegisterForm = () => {
             nationInput: '',
             celNumberInput: '',
             emailInput: ''
+        },
+        onSubmit: (userObj, actions) => {
+            console.log('formik userObj', userObj)
+
+            formik.resetForm()
         }
     })
 
     return (
         <>
-            <h1>Registro de Usuarios</h1>
-            <form>
-                <label htmlFor="docType">Tipo de documento</label>
-                <select id="docType" name="Tipo de documento">
-                    <option value="">-- Seleccione --</option>
-                    <option value="CC">Cédula de Ciudadanía</option>
-                    <option value="PS">Pasaporte</option>
-                    <option value="CE">Cédula de Extranjería</option>
-                </select>
+            <Box p={10}>
 
-                <label htmlFor="docNumber">Identificación</label>
-                <input id="docNumber" type="number"/>
+                <Text fontSize='5xl'>Registro de Usuarios</Text>
+                <form onSubmit={formik.handleSubmit}>
+                    <SimpleGrid columns={2} spacing={5}>
 
-                <label htmlFor="nameInput">Nombre(s)</label>
-                <input id="nameInput" type="text"/>
 
-                <label htmlFor="lastNameInput">Apellidos</label>
-                <input id="lastNameInput" type="text"/>
+                        <FormControl>
+                            <FormLabel htmlFor='docType'>Tipo de documento:</FormLabel>
+                            <Select id="docType" name="docType" value={formik.values.docType} onChange={formik.handleChange}>
+                                <option value="">-- Seleccione --</option>
+                                <option value="CC">Cédula de Ciudadanía</option>
+                                <option value="PS">Pasaporte</option>
+                                <option value="CE">Cédula de Extranjería</option>
+                            </Select>
+                        </FormControl>
 
-                <label htmlFor="nationInput">Nacionalidad</label>
-                <select id="nationInput" name="Tipo de documento">
-                    <option value="">-- Seleccione --</option>
-                    {countriesArray.map(country =>
-                    <option value={country.name} key={country.alpha2Code}>{country.name}</option>)}
-                </select>
+                        <FormControl>
+                            <FormLabel htmlFor='docNumber'>Identificación:</FormLabel>
+                            <Input id="docNumber"
+                                type="number"
+                                value={formik.values.docNumber}
+                                onChange={formik.handleChange} />
+                        </FormControl>
 
-                <label htmlFor="celNumberInput">Celular</label>
-                <input id="celNumberInput" type="text"/>
 
-                <label htmlFor="emailInput">Email</label>
-                <input id="emailInput" type="text"/>
+                        <FormControl>
+                            <FormLabel htmlFor='nameInput'>Nombre(s):</FormLabel>
+                            <Input id="nameInput" type="text" name="nameInput" value={formik.values.nameInput} onChange={formik.handleChange} />
+                        </FormControl>
 
-                <button type="submit">+Agregar</button>
-            </form>
+                        <FormControl>
+                            <FormLabel htmlFor='lastNameInput'>Apellidos:</FormLabel>
+                            <Input id="lastNameInput" type="text" name="lastNameInput" value={formik.values.lastNameInput} onChange={formik.handleChange} />
+                        </FormControl>
+
+                        <FormControl>
+                            <FormLabel htmlFor='nationInput'>Nacionalidad:</FormLabel>
+                            <Select id="nationInput" name="nationInput" value={formik.values.nationInput} onChange={formik.handleChange}>
+                                <option value="">-- Seleccione --</option>
+                                {countriesArray.map(country =>
+                                    <option value={country.name} key={country.alpha2Code}>{country.name}</option>)}
+                            </Select>
+                        </FormControl>
+
+                        <FormControl>
+                            <FormLabel htmlFor='celNumberInput'>Celular:</FormLabel>
+                            <Input id="celNumberInput" type="number" name="celNumberInput" value={formik.values.celNumberInput} onChange={formik.handleChange} />
+                        </FormControl>
+
+                        <FormControl>
+                            <FormLabel htmlFor='emailInput'>Email:</FormLabel>
+                            <Input id="emailInput" type="email" name="emailInput" value={formik.values.emailInput} onChange={formik.handleChange} />
+                        </FormControl>
+
+                        <Button colorScheme='blue' type="submit">+Agregar</Button>
+                    </SimpleGrid>
+                </form>
+            </Box>
         </>
     )
 }
