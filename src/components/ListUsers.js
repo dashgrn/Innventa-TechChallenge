@@ -3,22 +3,23 @@ import axios from "axios"
 import styles from '../styles/ListUsers.module.css'
 import { Text } from '@chakra-ui/react'
 
+
 const ListUsers = props => {
 
     const [usersList, setUsersList] = useState([]);
 
-    //function that receives the userData, then does POST req
-
     useEffect(() => {
         axios.get('http://144.217.88.168:3030/api/user')
             .then(response => {
-                console.log(response.data.data)
-                setUsersList(response.data.data)
+                // console.log(response.data.data)
+                //FILTERING USERS (ONLY SHOWING THE ONES I CREATED)
+                let filteredUsers = response.data.data.filter(user => user.createdBy === 'JFO')
+                setUsersList(filteredUsers)
             })
             .catch(err => {
                 console.log('error getting users list', err)
             })
-    }, []);
+    }, [props.createdUser]);
 
 
     return (
@@ -34,17 +35,15 @@ const ListUsers = props => {
                         <td>Email</td>
                     </tr>
                     {usersList.map((user) => (
-                        <tr key={user.id}>
-                            <td>{user.sicCode}</td>
-                            <td>{user.completeName}</td>
-                            <td>{user.nationality}</td>
-                            <td>{user.mobilePhone}</td>
-                            <td>{user.email}</td>
-                        </tr>
+                            <tr key={user.id}>
+                                <td>{user.sicCode}</td>
+                                <td>{user.completeName}</td>
+                                <td>{user.nationality}</td>
+                                <td>{user.mobilePhone}</td>
+                                <td>{user.email}</td>
+                            </tr>
                     ))
-
                     }
-
                 </tbody>
             </table>
         </div>

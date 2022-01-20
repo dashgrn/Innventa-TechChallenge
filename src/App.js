@@ -1,15 +1,38 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import RegisterForm from "./components/RegisterForm";
 import ListUsers from "./components/ListUsers";
+import axios from "axios";
 
 function App() {
 
-  const [usersList, setUsersList] = useState([])
+  const [createdUser, setCreatedUser] = useState({});
+
+
+  const postUser = (userObj) => {
+    let data = JSON.stringify(userObj)
+    const postConfig = {
+      method: 'post',
+      url: 'http://144.217.88.168:3030/api/user',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: data
+    }
+
+    console.log('user created with data:', userObj)
+    axios(postConfig)
+      .then(function (response) {
+        console.log(JSON.stringify('POST OK:', response.data));
+      })
+      .catch(function (error) {
+        console.log('POST ERROR:', error);
+      });
+  }
 
   return (
     <>
-      <RegisterForm />
-      <ListUsers/>
+      <RegisterForm postUser={postUser} setCreatedUser={setCreatedUser} />
+      <ListUsers createdUser={createdUser} />
     </>
   );
 }

@@ -3,19 +3,19 @@ import axios from "axios";
 import { useFormik } from 'formik'
 import { Button } from '@chakra-ui/react'
 import { Input, Select, FormControl, FormLabel, FormErrorMessage, SimpleGrid, Box, Text } from '@chakra-ui/react'
+import styles from '../styles/RegisterUser.module.css'
+
 
 const RegisterForm = props => {
 
     const [countriesArray, setCountriesArray] = useState([])
-
-    const [userInputs, setUserInputs] = useState({})
 
     //this sideEffect fetches the list of countries.
     useEffect(() => {
         axios.get('https://restcountries.com/v2/all?fields=name,alpha2Code')
             .then((response) => {
                 setCountriesArray(response.data)
-                console.log(countriesArray)
+                // console.log(countriesArray)
             }).catch((err) => {
                 console.log('error getting countries.', err)
             })
@@ -23,17 +23,29 @@ const RegisterForm = props => {
 
     const formik = useFormik({
         initialValues: {
-            docType: '',
-            docNumber: '',
-            nameInput: '',
-            lastNameInput: '',
-            nationInput: '',
-            celNumberInput: '',
-            emailInput: ''
+            sicCodeType: '',
+            sicCode: '',
+            firstName: '',
+            lastName: '',
+            nationality: '',
+            mobilePhone: '',
+            email: '',
+            createdBy: 'JFO'
         },
         onSubmit: (userObj, actions) => {
-            console.log('formik userObj', userObj)
-
+            if (userObj.sicCodeType === '' ||
+                userObj.sicCode === '' ||
+                userObj.firstName.trim().length === 0 ||
+                userObj.lastName.trim().length === 0 ||
+                userObj.nationality.trim().length === 0 ||
+                userObj.mobilePhone.match(/\d/g).length !== 10
+            ) {
+                alert('Hay datos inválidos, verifica de nuevo por favor.')
+                return;
+            }
+            // console.log('formik userObj', userObj)
+            props.setCreatedUser(userObj)
+            props.postUser(userObj)
             formik.resetForm()
         }
     })
@@ -48,8 +60,8 @@ const RegisterForm = props => {
 
 
                         <FormControl>
-                            <FormLabel htmlFor='docType'>Tipo de documento:</FormLabel>
-                            <Select id="docType" name="docType" value={formik.values.docType} onChange={formik.handleChange}>
+                            <FormLabel htmlFor='sicCodeType'>Tipo de documento:</FormLabel>
+                            <Select id="sicCodeType" name="sicCodeType" value={formik.values.sicCodeType} onChange={formik.handleChange}>
                                 <option value="">-- Seleccione --</option>
                                 <option value="CC">Cédula de Ciudadanía</option>
                                 <option value="PS">Pasaporte</option>
@@ -58,27 +70,38 @@ const RegisterForm = props => {
                         </FormControl>
 
                         <FormControl>
-                            <FormLabel htmlFor='docNumber'>Identificación:</FormLabel>
-                            <Input id="docNumber"
+                            <FormLabel htmlFor='sicCode'>Identificación:</FormLabel>
+                            <Input id="sicCode"
                                 type="number"
-                                value={formik.values.docNumber}
+                                value={formik.values.sicCode}
                                 onChange={formik.handleChange} />
                         </FormControl>
 
 
                         <FormControl>
-                            <FormLabel htmlFor='nameInput'>Nombre(s):</FormLabel>
-                            <Input id="nameInput" type="text" name="nameInput" value={formik.values.nameInput} onChange={formik.handleChange} />
+                            <FormLabel htmlFor='firstName'>Nombre(s):</FormLabel>
+                            <Input id="firstName"
+                                type="text"
+                                name="firstName"
+                                value={formik.values.firstName}
+                                onChange={formik.handleChange} />
                         </FormControl>
 
                         <FormControl>
-                            <FormLabel htmlFor='lastNameInput'>Apellidos:</FormLabel>
-                            <Input id="lastNameInput" type="text" name="lastNameInput" value={formik.values.lastNameInput} onChange={formik.handleChange} />
+                            <FormLabel htmlFor='lastName'>Apellidos:</FormLabel>
+                            <Input id="lastName"
+                                type="text"
+                                name="lastName"
+                                value={formik.values.lastName}
+                                onChange={formik.handleChange} />
                         </FormControl>
 
                         <FormControl>
-                            <FormLabel htmlFor='nationInput'>Nacionalidad:</FormLabel>
-                            <Select id="nationInput" name="nationInput" value={formik.values.nationInput} onChange={formik.handleChange}>
+                            <FormLabel htmlFor='nationality'>Nacionalidad:</FormLabel>
+                            <Select id="nationality"
+                                name="nationality"
+                                value={formik.values.nationality}
+                                onChange={formik.handleChange}>
                                 <option value="">-- Seleccione --</option>
                                 {countriesArray.map(country =>
                                     <option value={country.name} key={country.alpha2Code}>{country.name}</option>)}
@@ -86,13 +109,23 @@ const RegisterForm = props => {
                         </FormControl>
 
                         <FormControl>
-                            <FormLabel htmlFor='celNumberInput'>Celular:</FormLabel>
-                            <Input id="celNumberInput" type="number" name="celNumberInput" value={formik.values.celNumberInput} onChange={formik.handleChange} />
+                            <FormLabel htmlFor='mobilePhone'>Celular:</FormLabel>
+                            <Input id="mobilePhone"
+                                type="text"
+                                name="mobilePhone"
+                                pattern="[0-9]{10}"
+                                title="El número celular debe ser de 10 dígitos"
+                                value={formik.values.mobilePhone}
+                                onChange={formik.handleChange} />
                         </FormControl>
 
                         <FormControl>
                             <FormLabel htmlFor='emailInput'>Email:</FormLabel>
-                            <Input id="emailInput" type="email" name="emailInput" value={formik.values.emailInput} onChange={formik.handleChange} />
+                            <Input id="email"
+                                type="email"
+                                name="email"
+                                value={formik.values.email}
+                                onChange={formik.handleChange} />
                         </FormControl>
 
                         <Button colorScheme='blue' type="submit">+Agregar</Button>
